@@ -1,0 +1,76 @@
+@import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../../node_modules/react-datepicker/dist/react-datepicker.min.css";
+
+.App {
+  text-align: center;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.app-header {
+  background-color: #282c34;
+  min-height: 50px;
+  display: flex;
+  flex-direction: row; /* Arrange items in a row */
+  align-items: center; /* Vertically align items to the center */
+  justify-content: space-between; /* Space between logo and buttons */
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding: 10px 20px; /* Add padding around the text */
+}
+
+.logo {
+  font-size: 1.5em;
+  text-decoration: none; /* Remove default link underline */
+  color: inherit; /* Inherit color from the parent */
+}
+
+.nav-buttons {
+  display: flex;
+  margin-right: 20px; /* Padding for the buttons on the right */
+}
+
+.nav-button {
+  margin-left: 10px; /* Add space between buttons */
+  background-color: #61dafb; /* Light blue background */
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  color: white; /* White text color */
+  text-decoration: none; /* Remove default link underline */
+}
+
+.nav-button:hover {
+  background-color: #42a5f5; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.nav-button:active {
+  background-color: #2196f3; /* Even darker blue on click */
+  transform: translateY(1px); /* Slight press on click */
+}
+
+.app-content {
+  padding: 20px;
+}
+
+.create-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.options-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.options-section li {
+  margin-bottom: 10px;
+}

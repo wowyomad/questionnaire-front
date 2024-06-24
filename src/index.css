@@ -1,0 +1,84 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87); /* Sets default text color to a light gray */
+  background-color: #242424; /* Sets the default background to a dark gray */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff; /* Sets link color to a light blue */
+  text-decoration: inherit; /* Inherits text decoration (e.g., underline) from the parent element */
+}
+
+a:hover {
+  color: #535bf2; /* Darkens link color on hover */
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center; /* Centers content both horizontally and vertically */
+  min-width: 320px; 
+  min-height: 100vh; /* Ensures the body takes up the full viewport height */
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent; 
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a; /* Sets button background color to a dark gray */
+  cursor: pointer;
+  transition: border-color 0.25s; /* Adds a smooth transition for the border color change */
+}
+
+button:hover {
+  border-color: #646cff; /* Changes the button border color to light blue on hover */
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color; /* Adds a focus outline */
+}
+
+.submissions-table-container {
+  overflow-x: auto;
+  white-space: nowrap; /* Prevents text from wrapping inside table cells */
+}
+
+.submissions-table {
+  display: table;
+  width: auto; /* Allows the table to adjust its width based on content */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    color: #213547; /* Sets text color to a dark gray for light mode */
+    background-color: #ffffff; /* Sets background color to white for light mode */
+  }
+
+  a:hover {
+    color: #747bff; /* Sets link color to a light blue for light mode */
+  }
+
+  button {
+    background-color: #f9f9f9; /* Sets button background color to a light gray for light mode */
+  }
+}
