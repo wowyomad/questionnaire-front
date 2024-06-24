@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
 
 const questionTypes = [
   'SINGLE_LINE_TEXT',
@@ -12,8 +13,11 @@ const questionTypes = [
 function QuestionForm({ onSubmit, question }) {
   const [questionData, setQuestionData] = useState({
     label: '',
+    text: '',
     type: 'SINGLE_LINE_TEXT',
-    options: []
+    options: [],
+    isRequired: false, 
+    isActive: true,   
   });
 
   useEffect(() => {
@@ -21,13 +25,24 @@ function QuestionForm({ onSubmit, question }) {
       setQuestionData({
         label: question.label,
         type: question.type,
+        text: question.text,
         options: question.options.map(option => ({
           id: option.id,
-          text: option.text
+          text: option.text,
+          isRequired: option.isRequired || false, // Load isRequired if exists
+          isActive: option.isActive || true,    // Load isActive if exists
         }))
       });
     }
   }, [question]);
+
+  const handleIsRequiredChange = () => {
+    setQuestionData(prevData => ({ ...prevData, isRequired: !prevData.isRequired }));
+  };
+
+  const handleIsActiveChange = () => {
+    setQuestionData(prevData => ({ ...prevData, isActive: !prevData.isActive }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +63,7 @@ function QuestionForm({ onSubmit, question }) {
   const handleAddOption = () => {
     setQuestionData(prevData => ({
       ...prevData,
-      options: [...prevData.options, { id: Date.now(), text: '' }]
+      options: [...prevData.options, { text: 'Option' }]
     }));
   };
 
@@ -68,7 +83,7 @@ function QuestionForm({ onSubmit, question }) {
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup>
-        <Label for="label">Question Label:</Label>
+        <Label for="label">Label:</Label>
         <Input
           type="text"
           name="label"
@@ -77,6 +92,30 @@ function QuestionForm({ onSubmit, question }) {
           onChange={handleChange}
           required
         />
+      </FormGroup>
+      <FormGroup>
+      <Label for="label">Description</Label>
+      <Input
+      type = "textarea"
+      name = "text"
+      id = "text"
+      value = {questionData.text}
+      onChange={handleChange}
+      />
+
+      </FormGroup>
+      <FormGroup check>
+        <Label check>
+          <Input type="checkbox" checked={questionData.isRequired} onChange={handleIsRequiredChange} />{' '}
+          Is Required
+        </Label>
+      </FormGroup>
+
+      <FormGroup check>
+        <Label check>
+          <Input type="checkbox" checked={questionData.isActive} onChange={handleIsActiveChange} />{' '}
+          Is Active
+        </Label>
       </FormGroup>
       <FormGroup>
         <Label for="type">Question Type:</Label>

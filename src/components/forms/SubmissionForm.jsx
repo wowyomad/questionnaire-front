@@ -78,7 +78,9 @@ function SubmissionForm({ questions, onSubmit }) {
     <Form onSubmit={handleSubmit}>
       {questions.map((question) => (
         <FormGroup key={question.id}>
-          <Label for={question.id}>{question.label}</Label>
+           <Label for={question.id} className={question.isRequired ? 'required' : ''}>
+            {question.label}
+          </Label>
           {question.type === 'SINGLE_LINE_TEXT' && (
             <Input
               type="text"

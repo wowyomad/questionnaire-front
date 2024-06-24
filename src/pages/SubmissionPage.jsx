@@ -30,7 +30,7 @@ function SubmissionPage() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Submission Form</h2>
+      <h2 className="mb-4">Submission</h2>
       {questions.length > 0 && (
         <SubmissionForm questions={questions} onSubmit={handleSubmit} />
       )}

@@ -3,17 +3,13 @@ import { getQuestions, addQuestion, updateQuestion, deleteQuestion } from '../se
 import QuestionsTable from '../components/QuestionsTable';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText, Table } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css'; 
+import QuestionForm from '../components/forms/QuestionForm';
 
 function QuestionsPage() {
   const [questions, setQuestions] = useState([]);
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [isEditingQuestion, setIsEditingQuestion] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [newQuestionData, setNewQuestionData] = useState({
-    label: '',
-    type: 'SINGLE_LINE_TEXT',
-    options: []
-  });
 
   useEffect(() => {
     fetchQuestions();
@@ -28,11 +24,31 @@ function QuestionsPage() {
     }
   };
 
-  const handleAddQuestionToggle = () => {
-    setIsAddingQuestion(!isAddingQuestion);
+  const handleQuestionSubmit = async (questionData) => {
+    try {
+      if (selectedQuestion) {
+        // Editing existing question
+        await updateQuestion(selectedQuestion.id, questionData);
+      } else {
+        // Adding new question
+        await addQuestion(questionData);
+      }
+      fetchQuestions();
+      setIsAddingQuestion(false);
+      setIsEditingQuestion(false);
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle the error, e.g., show an error message to the user
+    }
   };
 
-  const handleEditQuestionToggle = () => {
+  const handleAddQuestionToggle = () => {
+    setIsAddingQuestion(!isAddingQuestion);
+    setSelectedQuestion(null); 
+  };
+
+  const handleEditQuestionToggle = (question) => {
+    setSelectedQuestion(question);
     setIsEditingQuestion(!isEditingQuestion);
   };
 
@@ -131,146 +147,31 @@ function QuestionsPage() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Question Manager</h2>
+      <h2 className="mb-4">Fields</h2>
       <Button color="primary" onClick={handleAddQuestionToggle}>Add Question</Button>
-      <Modal isOpen={isAddingQuestion} toggle={handleAddQuestionToggle}>
-        <ModalHeader toggle={handleAddQuestionToggle}>Add New Question</ModalHeader>
+
+      {/* Modals for Add and Edit */}
+      <Modal isOpen={isAddingQuestion || isEditingQuestion} toggle={() => (isAddingQuestion ? handleAddQuestionToggle() : handleEditQuestionToggle(null))}>
+        <ModalHeader toggle={() => (isAddingQuestion ? handleAddQuestionToggle() : handleEditQuestionToggle(null))}>
+          {isAddingQuestion ? "Add New Question" : "Edit Question"}
+        </ModalHeader>
         <ModalBody>
-          <Form onSubmit={handleAddQuestionSubmit}>
-            <FormGroup>
-              <Label for="label">Question Label:</Label>
-              <Input
-                type="text"
-                name="label"
-                id="label"
-                value={newQuestionData.label}
-                onChange={handleQuestionChange}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="type">Question Type:</Label>
-              <Input type="select" name="type" id="type" value={newQuestionData.type} onChange={handleQuestionChange}>
-                <option value="SINGLE_LINE_TEXT">SINGLE LINE TEXT</option>
-                <option value="MULTILINE_TEXT">MULTILINE TEXT</option>
-                <option value="RADIO_BUTTON">RADIO BUTTON</option>
-                <option value="CHECKBOX">CHECKBOX</option>
-                <option value="COMBOBOX">COMBOBOX</option>
-                <option value="DATE">DATE</option>
-              </Input>
-            </FormGroup>
-            {['RADIO_BUTTON', 'CHECKBOX', 'COMBOBOX'].includes(newQuestionData.type) && (
-              <FormGroup>
-                <Label for="options">Options:</Label>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Text</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {newQuestionData.options.map((option, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>
-                          <Input
-                            type="text"
-                            value={option.text}
-                            onChange={(e) => handleOptionChange(index, { ...option, text: e.target.value })}
-                          />
-                        </td>
-                        <td>
-                          <Button color="danger" onClick={() => handleRemoveOption(index)}>Remove</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                <Button color="secondary" onClick={handleAddOption}>Add Option</Button>
-              </FormGroup>
-            )}
-            <ModalFooter>
-              <Button type="submit" color="primary">Save</Button>
-              <Button color="secondary" onClick={handleAddQuestionToggle}>Cancel</Button>
-            </ModalFooter>
-          </Form>
+          <QuestionForm 
+            question={isEditingQuestion ? selectedQuestion : null} 
+            onSubmit={handleQuestionSubmit}
+          /> 
         </ModalBody>
       </Modal>
-      <Modal isOpen={isEditingQuestion} toggle={handleEditQuestionToggle}>
-        <ModalHeader toggle={handleEditQuestionToggle}>Edit Question</ModalHeader>
-        <ModalBody>
-          <Form onSubmit={handleEditQuestionSubmit}>
-            <FormGroup>
-              <Label for="label">Question Label:</Label>
-              <Input
-                type="text"
-                name="label"
-                id="label"
-                value={newQuestionData.label}
-                onChange={handleQuestionChange}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="type">Question Type:</Label>
-              <Input type="select" name="type" id="type" value={newQuestionData.type} onChange={handleQuestionChange}>
-                <option value="SINGLE_LINE_TEXT">SINGLE LINE TEXT</option>
-                <option value="MULTILINE_TEXT">MULTILINE TEXT</option>
-                <option value="RADIO_BUTTON">RADIO BUTTON</option>
-                <option value="CHECKBOX">CHECKBOX</option>
-                <option value="COMBOBOX">COMBOBOX</option>
-                <option value="DATE">DATE</option>
-              </Input>
-            </FormGroup>
-            {['RADIO_BUTTON', 'CHECKBOX', 'COMBOBOX'].includes(newQuestionData.type) && (
-              <FormGroup>
-                <Label for="options">Options:</Label>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Text</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {newQuestionData.options.map((option, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>
-                          <Input
-                            type="text"
-                            value={option.text}
-                            onChange={(e) => handleOptionChange(index, { ...option, text: e.target.value })}
-                          />
-                        </td>
-                        <td>
-                          <Button color="danger" onClick={() => handleRemoveOption(index)}>Remove</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-                <Button color="secondary" onClick={handleAddOption}>Add Option</Button>
-              </FormGroup>
-            )}
-            <ModalFooter>
-              <Button type="submit" color="primary">Save</Button>
-              <Button color="secondary" onClick={handleEditQuestionToggle}>Cancel</Button>
-            </ModalFooter>
-          </Form>
-        </ModalBody>
-      </Modal>
+
       <hr />
       <QuestionsTable
         questions={questions}
-        onEdit={handleEditQuestion}
+        onEdit={handleEditQuestionToggle}
         onDelete={handleDeleteQuestion}
       />
     </div>
   );
 }
+
 
 export default QuestionsPage;
