@@ -8,7 +8,7 @@ import SubmissionPage from './pages/SubmissionPage';
 import { useState } from 'react';
 
 export default function App() {
-  const [activePage, setActivePage] = useState('submission'); // Initial page is 'submission'
+  const [activePage, setActivePage] = useState('submission');
 
   const handlePageChange = (page) => {
     setActivePage(page);

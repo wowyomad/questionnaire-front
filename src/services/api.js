@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080'; // Replace with your API base URL
+const API_BASE_URL = 'http://localhost:8080'; 
 
-// Questions API
 export const getQuestions = async () => {
   const response = await axios.get(`${API_BASE_URL}/questions`);
   console.log('GET /questions Response:', response.data);
@@ -45,7 +44,6 @@ export const deleteQuestion = async (questionId) => {
   }
 };
 
-// Submissions API
 
 export const getSubmissions = async () => {
   const response = await axios.get(`${API_BASE_URL}/submissions`);
