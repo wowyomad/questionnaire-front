@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { getSubmissions, deleteSubmission } from '../services/api';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap'; // Import Table
 import { getQuestions } from '../services/api'; 
+import ResponsesTable from '../components/ResponsesTable';
 
 function ResponsesPage() {
     const [submissions, setSubmissions] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [isDeletingSubmission, setIsDeletingSubmission] = useState(false);
-    const [selectedSubmissionId, setSelectedSubmissionId] = useState(null);
   
     useEffect(() => {
       fetchSubmissions();
@@ -36,8 +36,8 @@ function ResponsesPage() {
       setIsDeletingSubmission(!isDeletingSubmission);
     };
   
-    const handleDeleteSubmission = async () => {
-      if (true || window.confirm('Are you sure you want to delete this submission?')) {
+    const handleDeleteSubmission = async (selectedSubmissionId) => {
+      if (window.confirm('Are you sure you want to delete this submission?')) {
         try {
           const success = await deleteSubmission(selectedSubmissionId);
           if (success) {
@@ -50,15 +50,27 @@ function ResponsesPage() {
       }
     };
   
-    const handleSelectSubmission = (submissionId) => {
-      setSelectedSubmissionId(submissionId);
-      handleDeleteSubmissionToggle();
-    };
-  
     const getQuestionById = (questionId) => {
       return questions.find(q => q.id === questionId);
     };
-  
+    
+    return (
+    <div className='container mt-4'>
+      <h2 className='mb-4'>Responses</h2>
+      <ResponsesTable onDelete={handleDeleteSubmission} questions={questions} submissions={submissions}></ResponsesTable>
+        {/* <tbody>
+        {submissions.answers.map(answer => 
+        <tr>
+          <th scope="row"></th>
+          <td>{answer.questionType}</td>
+          <td>{answer.text && answer.text.length > 0 ? answer.text : "N/A"}</td>
+          <td>{answer.selectedOptions && answer.selectedOpions.length > 0 ? answer.selectedOpions : "N/A"}</td>
+        </tr>
+        )}
+        </tbody> */}
+    </div>
+    )
+
     return (
       <div className="container mt-4">
         <h2 className="mb-4">Responses Viewer</h2>

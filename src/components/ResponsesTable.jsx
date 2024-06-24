@@ -6,6 +6,28 @@ function ResponsesTable({ submissions, questions, onDelete }) {
     return questions.find((q) => q.id === questionId);
   };
 
+  const mapTo = (answer) => {
+    if (answer?.selectedOptions?.length > 0) {
+      return (
+        <ul style={{ columns: '2' }}>
+          {answer.selectedOptions.map((option, index) => (
+            <li key={index}>
+              {option.text.split(' ').map((word, wordIndex) => (
+                <span key={wordIndex}>{word} </span> 
+              ))}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+  
+    if (answer?.text?.length > 0) {
+      return <ul>{answer.text}</ul>;
+    }
+  
+    return <ul>N/A</ul>;
+  };
+
   return (
     <Table striped responsive>
       <thead>
@@ -20,38 +42,15 @@ function ResponsesTable({ submissions, questions, onDelete }) {
       <tbody>
         {submissions.map((submission) => (
           <tr key={submission.id}>
-            <td>
-              {new Date(
-                submission.submissionTime[0],
-                submission.submissionTime[1] - 1, 
-                submission.submissionTime[2],
-                submission.submissionTime[3],
-                submission.submissionTime[4],
-                submission.submissionTime[5]
-              ).toLocaleString()}
-            </td>
+            <td>{submission.submissionTime}</td>
             {questions.map((question) => {
               const answer = submission.answers.find(
                 (a) => a.questionId === question.id
               );
               return (
                 <td key={question.id}> 
-                  {answer ? (
-                    answer.selectedOptions.length > 0 ? (
-                      <ul>
-                        {answer.selectedOptions.map((optionId) => { 
-                          const optionText = getQuestionById(question.id)?.options.find(
-                            (o) => o.id === optionId 
-                          );
-                          return <li key={optionId}>{optionText?.text}</li>; 
-                        })}
-                      </ul>
-                    ) : answer.text
-                      ? answer.text
-                      : 'N/A'
-                  ) : (
-                    'N/A' 
-                  )}
+                {mapTo(answer)}
+                
                 </td>
               );
             })}

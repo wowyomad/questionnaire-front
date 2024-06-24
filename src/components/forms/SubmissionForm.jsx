@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,6 +9,8 @@ function SubmissionForm({ questions, onSubmit }) {
 
 
   const handleInputChange = (questionId, value) => {
+    console.log(`handleInutChange: questionId ${questionId}, value ${value}`)
+
     setFormData((prevData) => ({
       ...prevData,
       [questionId]: value,
@@ -15,6 +18,7 @@ function SubmissionForm({ questions, onSubmit }) {
   };
 
   const handleSingleOptoinChange = (questionId, value) => {
+    console.log(`handleSingleOption: questionId ${questionId}, value ${value}`)
     setFormData((prevData) => ({
       ...prevData,
       [questionId]: [value]
@@ -34,30 +38,40 @@ function SubmissionForm({ questions, onSubmit }) {
     });
   };
 
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData)
     try {
-    const submissionData = {
-      answers: questions.map((question) => ({
-        questionId: question.id,
-        selectedOptions: Array.isArray(formData[question.id]) ? formData[question.id].map(id => ({id: id})) : [],
-        text: typeof formData[question.id] === 'string' ? formData[question.id] : '',
-      })),
-    };
+      const filteredQuestions = questions.filter((question) => {
+        const answer = formData[question.id];
+        return typeof answer === 'string' || (Array.isArray(answer) && answer.length > 0);
+      });
 
-    submissionData.answers.forEach((answer) => {
-      console.log('Question ID:', answer.questionId);
-      console.log('Selected Options:', answer.selectedOptions);
-      console.log('Text:', answer.text);
-      console.log('---------------------------');
-    });
-    
+      const submissionData = {
+        answers: filteredQuestions.map((question) => {
+          const answer = formData[question.id];
+          return {
+            questionId: question.id,
+            selectedOptions: Array.isArray(answer) ? answer.map((id) => ({ id })) : [],
+            text: typeof answer === 'string' ? answer : '',
+          };
+        }),
+      };
 
-    onSubmit(submissionData);
-  } catch (error) {
-    alert(error)
-  }
+      submissionData.answers.forEach((answer) => {
+        console.log('Question ID:', answer.questionId);
+        console.log('Selected Options:', answer.selectedOptions);
+        console.log('Text:', answer.text);
+        console.log('---------------------------');
+      });
+
+      onSubmit(submissionData); // Assuming onSubmit is an async function
+
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert(error);
+    }
   };
 
   return (
@@ -127,9 +141,9 @@ function SubmissionForm({ questions, onSubmit }) {
           {question.type === 'DATE' && (
             <DatePicker
               id={question.id}
-              selected={formData[question.id] || null}
-              onChange={(date) => handleInputChange(question.id, date)}
-              dateFormat="yyyy-MM-dd"
+              selected={isValidDate(formData[question.id]) ? moment(formData[question.id], "dd-MM-yyyy").toDate() : null}
+              onChange={(date) => handleInputChange(question.id, moment(date).format('dd-MM-yyyy'))}
+              dateFormat="dd-MM-yyyy"
               className="form-control"
             />
           )}
@@ -138,6 +152,10 @@ function SubmissionForm({ questions, onSubmit }) {
       <Button type="submit" color="primary">Submit Response</Button>
     </Form>
   );
+}
+
+function isValidDate(dateString) {
+  return moment(dateString, "dd-MM-yyyy", true).isValid(); // Strict parsing
 }
 
 export default SubmissionForm;
